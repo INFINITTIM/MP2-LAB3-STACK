@@ -18,5 +18,5 @@ int main()
 
 	cout << a.GetPostfix() << " (my answer)" << endl;
 	cout << "4 30 + 40 5 * + 8 4000 3 + * + (right answer)" << endl;
-	cout << a.CalculatorPostfix();
+	cout << "Calculator answer: " << a.CalculatorPostfix() << endl;
 }
