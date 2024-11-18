@@ -27,21 +27,26 @@ string TCalc::GetPostfix()
 	return postfix;
 }
 
-int TCalc::Priority(char a)
+int TCalc::Priority(Function a)
 {
-	if (a == '^')
+	if (a == DEGREE)
 		return 3;
-	if (a == '*' || a == '/')
+	if (a == MULT || a == DIV)
 		return 2;
-	if (a == '+' || a == '-')
+	if (a == PLUS || a == MINUS)
 		return 1;
 	return 0;
 }
 
+int TCalc::Factorial(int n)
+{
+	if (n <= 1) return 1;
+	return n * Factorial(n - 1);
+}
+
+/*
 void TCalc::ToPostfix()
 {
-	/*if (!(Check(infix)))
-		cout << "not correct" << endl;*/
 	postfix = "";
 	Stack_with_symbol.clear();
 	string infix_time = '(' + infix + ')';
@@ -71,8 +76,8 @@ void TCalc::ToPostfix()
 			Stack_with_symbol.Push(infix_time[i]);
 		}
 	}
-}
-
+}*/
+/*
 double TCalc::CalculatorPostfix()
 {
 	stack_with_numbers.clear();
@@ -89,7 +94,7 @@ double TCalc::CalculatorPostfix()
 		{
 			double second_number = stack_with_numbers.Pop();
 			double first_number = stack_with_numbers.Pop();
-			double res;
+			double res = 0;
 			switch (postfix[i])
 			{
 			case'+':
@@ -115,89 +120,196 @@ double TCalc::CalculatorPostfix()
 	if (!(stack_with_numbers.Empty()))
 		throw - 1;
 	return result_with_stack;
-}
+}*/
 
-double TCalc::Calculator() 
+double TCalc::Calculator()
 {
 	string infix_time = '(' + infix + ')';
 	Stack_with_symbol.clear();
 	stack_with_numbers.clear();
+	string check_string = "";
+
+	double const pi = 3.1415926535;
 
 	for (int i = 0; i < infix_time.size(); i++)
 	{
 		char tmp = infix_time[i];
-		if (tmp >= '0' && tmp <= '9' || tmp == '.')
+
+		// Обработка функций
+		if (tmp >= 'a' && tmp <= 'z')
+		{
+			check_string += tmp;
+			if (check_string == "sin")
+			{
+				Stack_with_symbol.Push(SIN);
+				check_string.clear();
+				i++;
+			}
+			else if (check_string == "cos")
+			{
+				Stack_with_symbol.Push(COS);
+				check_string.clear();
+				i++;
+			}
+			else if (check_string == "exp")
+			{
+				Stack_with_symbol.Push(EXP);
+				check_string.clear();
+				i++;
+			}
+			else if (check_string == "pi")
+			{
+				stack_with_numbers.Push(pi);
+			}
+		}
+
+		// Обработка чисел
+		if ((tmp >= '0' && tmp <= '9') || tmp == '.')
 		{
 			size_t idx;
 			double num = stod(&infix_time[i], &idx);
 			stack_with_numbers.Push(num);
-			i += idx - 1;
+			i += idx - 1; // Увеличиваем индекс на количество прочитанных символов
 		}
+
+		// Обработка скобок
 		if (tmp == '(')
-			Stack_with_symbol.Push(tmp);
+		{
+			if (infix_time[i + 1] == '-' && i + 1 < infix_time.size())
+			{
+				size_t idx;
+				double num = stod(&infix_time[i+1], &idx);
+				stack_with_numbers.Push(num);
+				i += idx;
+			}
+			Stack_with_symbol.Push(OPENED_BRECKET);
+		}
+
+		// Обработка закрывающей скобки
 		if (tmp == ')')
 		{
-			char a = Stack_with_symbol.Pop();
-			while (a != '(')
+			Function a = Stack_with_symbol.Pop();
+			while (a != OPENED_BRECKET && a != SIN && a != COS && a != EXP)
 			{
 				double second_number = stack_with_numbers.Pop();
 				double first_number = stack_with_numbers.Pop();
 				double res = 0;
+
 				switch (a)
 				{
-				case'+':
+				case PLUS:
 					res = first_number + second_number;
 					break;
-				case'-':
+				case MINUS:
 					res = first_number - second_number;
 					break;
-				case'*':
+				case MULT:
 					res = first_number * second_number;
 					break;
-				case'/':
+				case DIV:
 					res = first_number / second_number;
 					break;
-				case'^':
+				case DEGREE:
 					res = pow(first_number, second_number);
 					break;
 				}
 				stack_with_numbers.Push(res);
 				a = Stack_with_symbol.Pop();
 			}
+
+			// Обработка функций
+			if (a == SIN || a == COS || a == EXP)
+			{
+				double func_number = stack_with_numbers.Pop();
+				double func_number_rad = func_number * (pi / 180);
+				double ress = 0;
+
+				switch (a)
+				{
+				case SIN:
+					ress = func_number_rad - 
+						(pow(func_number_rad, 3) / Factorial(3)) +
+						(pow(func_number_rad, 5) / Factorial(5)) -
+						(pow(func_number_rad, 7) / Factorial(7)) +
+						(pow(func_number_rad, 9) / Factorial(9));
+					break;
+
+				case COS:
+					ress = 1 - 
+						(pow(func_number_rad, 2) / Factorial(2)) +
+						(pow(func_number_rad, 4) / Factorial(4)) -
+						(pow(func_number_rad, 6) / Factorial(6)) +
+						(pow(func_number_rad, 8) / Factorial(8));
+					break;
+
+				case EXP:
+					ress = 1 + func_number +
+						(pow(func_number, 2) / Factorial(2)) +
+						(pow(func_number, 3) / Factorial(3)) +
+						(pow(func_number, 4) / Factorial(4)) +
+						(pow(func_number, 5) / Factorial(5)) +
+						(pow(func_number, 6) / Factorial(6)) +
+						(pow(func_number, 7) / Factorial(7)) +
+						(pow(func_number, 8) / Factorial(8)) +
+						(pow(func_number, 9) / Factorial(9)) +
+						(pow(func_number, 10) / Factorial(10)) +
+						(pow(func_number, 11) / Factorial(11)) +
+						(pow(func_number, 12) / Factorial(12)) +
+						(pow(func_number, 13) / Factorial(13));
+					break;
+				}
+				stack_with_numbers.Push(ress);
+			}
+			//continue;
 		}
+
+		// Обработка операторов
 		if (tmp == '+' || tmp == '-' || tmp == '*' || tmp == '/' || tmp == '^')
 		{
-			while ((Priority(tmp) <= Priority(Stack_with_symbol.Top())) && (!Stack_with_symbol.Empty()))
+			Function op;
+			switch (tmp)
+			{
+			case '+': op = PLUS; break;
+			case '-': op = MINUS; break;
+			case '*': op = MULT; break;
+			case '/': op = DIV; break;
+			case '^': op = DEGREE; break;
+			}
+
+			while (!Stack_with_symbol.Empty() && Priority(op) <= Priority(Stack_with_symbol.Top()))
 			{
 				double second_number = stack_with_numbers.Pop();
 				double first_number = stack_with_numbers.Pop();
 				double res = 0;
-				char a = Stack_with_symbol.Pop();
+				Function a = Stack_with_symbol.Pop();
+
 				switch (a)
 				{
-				case'+':
+				case PLUS:
 					res = first_number + second_number;
 					break;
-				case'-':
+				case MINUS:
 					res = first_number - second_number;
 					break;
-				case'*':
+				case MULT:
 					res = first_number * second_number;
 					break;
-				case'/':
+				case DIV:
 					res = first_number / second_number;
 					break;
-				case'^':
+				case DEGREE:
 					res = pow(first_number, second_number);
 					break;
 				}
 				stack_with_numbers.Push(res);
 			}
-			Stack_with_symbol.Push(tmp);
+			Stack_with_symbol.Push(op);
 		}
 	}
+
 	double result_with_stack = stack_with_numbers.Pop();
-	if (!(stack_with_numbers.Empty()))
+	if (!stack_with_numbers.Empty())
 		throw - 1;
+
 	return result_with_stack;
 }

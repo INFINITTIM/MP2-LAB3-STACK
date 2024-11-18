@@ -6,6 +6,20 @@
 
 using namespace std;
 
+enum Function
+{
+	OPENED_BRECKET,
+	PLUS,
+	MINUS,
+	MULT,
+	DIV,
+	DEGREE,
+	SIN,
+	COS,
+	EXP
+};
+
+
 class TCalc
 {
 private:
@@ -13,9 +27,10 @@ private:
 	string postfix;
 
 	TStack<double> stack_with_numbers;
-	TStack<char> Stack_with_symbol;
+	TStack<Function> Stack_with_symbol;
 
-	int Priority(char a);
+	int Priority(Function a);
+	int Factorial(int number);
 public:
 	TCalc();
 
@@ -29,22 +44,4 @@ public:
 
 	double CalculatorPostfix();
 	double Calculator();
-};
-
-enum Function
-{
-	OPENED_BRECKET,
-	CLOSED_BRECKET,
-
-	PLUS,
-	MINUS,
-	MULT,
-	DIV,
-	DEGREE,
-
-	UN_MINUS,
-	SIN,
-	COS,
-	LOG,
-	EXP
 };
