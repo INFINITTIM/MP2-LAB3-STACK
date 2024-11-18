@@ -8,27 +8,29 @@ TEST(TStack, can_create_stack_with_positive_size)
   ASSERT_NO_THROW(TStack<int> m(5));
 }
 
+TEST(TStack, throws_when_create_stack_with_negative_length)
+{
+	ASSERT_ANY_THROW(TStack<int> m(-5));
+}
+
+TEST(TMatrix, can_create_copied_stack)
+{
+	TStack<int> m(5);
+
+	ASSERT_NO_THROW(TStack<int> m1(m));
+}
+
+TEST(TMatrix, copied_stack_is_equal_to_source_one)
+{
+	TStack<int> m(5);
+	TStack<int> m1(m);
+	EXPECT_EQ(m, m1);
+}
+
 /*
 TEST(TMatrix, cant_create_too_large_matrix)
 {
   ASSERT_ANY_THROW(TMatrix<int> m(MAX_MATRIX_SIZE + 1));
-}
-
-TEST(TMatrix, throws_when_create_matrix_with_negative_length)
-{
-  ASSERT_ANY_THROW(TMatrix<int> m(-5));
-}
-
-TEST(TMatrix, can_create_copied_matrix)
-{
-  TMatrix<int> m(5);
-
-  ASSERT_NO_THROW(TMatrix<int> m1(m));
-}
-
-TEST(TMatrix, copied_matrix_is_equal_to_source_one)
-{
-  ADD_FAILURE();
 }
 
 TEST(TMatrix, copied_matrix_has_its_own_memory)

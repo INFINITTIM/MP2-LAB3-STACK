@@ -9,14 +9,12 @@ int main()
 {
 	TCalc a;
 
-	string str = "(4+30)+40*5+8*(4000+3)";
-	//34 + 200 + 8 * 4003 = 234 + 32024 = 32258
-	//4 3 + 4 5 * + 8 4 3 + * +
-
+	string str = "(1.2+30)+40.3*5+8*(4.453000+3)";
+	//cout << "1.2 30 + 40.3 5 * + 8 4.453000 3 + * + (right answer)" << endl;
 	a.SetInfix(str);
-	a.ToPostfix();
+	cout << a.Calculator() << endl;
+	//a.ToPostfix();
 
-	cout << a.GetPostfix() << " (my answer)" << endl;
-	cout << "4 30 + 40 5 * + 8 4000 3 + * + (right answer)" << endl;
-	cout << "Calculator answer: " << a.CalculatorPostfix() << endl;
+	//cout << a.GetPostfix() << " (my answer)" << endl;
+	//cout << "Calculator answer: " << a.CalculatorPostfix() << endl;
 }

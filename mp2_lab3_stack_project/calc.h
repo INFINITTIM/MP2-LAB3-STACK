@@ -15,7 +15,6 @@ private:
 	TStack<double> stack_with_numbers;
 	TStack<char> Stack_with_symbol;
 
-	//bool Check(string str);
 	int Priority(char a);
 public:
 	TCalc();
@@ -29,5 +28,23 @@ public:
 	void ToPostfix();
 
 	double CalculatorPostfix();
-	double Calculator(); // вычислить выражение за один проход
+	double Calculator();
+};
+
+enum Function
+{
+	OPENED_BRECKET,
+	CLOSED_BRECKET,
+
+	PLUS,
+	MINUS,
+	MULT,
+	DIV,
+	DEGREE,
+
+	UN_MINUS,
+	SIN,
+	COS,
+	LOG,
+	EXP
 };
