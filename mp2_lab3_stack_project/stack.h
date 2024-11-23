@@ -1,8 +1,6 @@
 #pragma once
 #include <iostream>
 
-using namespace std;
-
 template <class T>
 class TStack
 {
@@ -47,7 +45,7 @@ template <class T>
 TStack<T>::TStack(const TStack<T>& other_stack)
 {
 	maxsize = other_stack.maxsize;
-	num_last_element = other_stack.mun_last_element;
+	num_last_element = other_stack.num_last_element;
 	pMem = new T[maxsize];
 	for (int i = 0; i <= num_last_element; i++)
 		pMem[i] = other_stack.pMem[i];
@@ -137,17 +135,3 @@ void TStack<T>::clear()
 {
 	num_last_element = -1;
 }
-
-// операнд - целое число, вещественное или переменная
-// в строке могут быть операции (сложение вычитание умножение деление и возведение в степень)
-// могут быть скобки
-// *использование функций
-// вычислить выражениее заданное строкой
-
-// приоритеты разные у разных операций
-
-// q = (1 + 2) * (3 + 4) => 12+34+*
-// перевод из инфиксной записи в постфиксную (обратную польскую) 
-// вычисление выражение в постфиксной записи
-
-

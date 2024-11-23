@@ -4,8 +4,6 @@
 #include "stack.h"
 #include "string"
 
-using namespace std;
-
 enum Function
 {
 	OPENED_BRECKET,
@@ -23,22 +21,23 @@ enum Function
 class TCalc
 {
 private:
-	string infix;
-	string postfix;
+	std::string infix;
+	std::string postfix;
 
 	TStack<double> stack_with_numbers;
 	TStack<Function> Stack_with_symbol;
 
+	bool Check(std::string str);
 	int Priority(Function a);
-	int Factorial(int number);
+	double Factorial(double number);
 public:
 	TCalc();
 
-	void SetInfix(string str);
-	string GetInfix();
+	void SetInfix(std::string str);
+	std::string GetInfix();
 
-	void SetPostfix(string str);
-	string GetPostfix();
+	void SetPostfix(std::string str);
+	std::string GetPostfix();
 
 	void ToPostfix();
 

@@ -1,5 +1,4 @@
 #include "calc.h"
-#include "Check.cpp"
 
 TCalc::TCalc()
 {
@@ -7,22 +6,22 @@ TCalc::TCalc()
 	TStack<char> Stack_with_symbol;
 }
 
-void TCalc::SetInfix(string str)
+void TCalc::SetInfix(std::string str)
 {
 	infix = str;
 }
 
-string TCalc::GetInfix()
+std::string TCalc::GetInfix()
 {
 	return infix;
 }
 
-void TCalc::SetPostfix(string str)
+void TCalc::SetPostfix(std::string str)
 {
 	postfix = str;
 }
 
-string TCalc::GetPostfix()
+std::string TCalc::GetPostfix()
 {
 	return postfix;
 }
@@ -38,10 +37,29 @@ int TCalc::Priority(Function a)
 	return 0;
 }
 
-int TCalc::Factorial(int n)
+double TCalc::Factorial(double n)
 {
 	if (n <= 1) return 1;
 	return n * Factorial(n - 1);
+}
+
+bool TCalc::Check(std::string str) {
+	TStack<char> s;
+
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] == '(') {
+			s.Push('(');
+			if (str[i + 1] == ')')
+				return false;
+		}
+		else if (str[i] == ')') {
+			if (s.Empty()) {
+				return false; 
+			}
+			s.Pop();
+		}
+	}
+	return s.Empty();
 }
 
 /*
@@ -124,10 +142,12 @@ double TCalc::CalculatorPostfix()
 
 double TCalc::Calculator()
 {
-	string infix_time = '(' + infix + ')';
+	if (!Check(infix))
+		throw - 1;
+	std::string infix_time = '(' + infix + ')';
 	Stack_with_symbol.clear();
 	stack_with_numbers.clear();
-	string check_string = "";
+	std::string check_string = "";
 
 	double const pi = 3.1415926535;
 
@@ -167,7 +187,7 @@ double TCalc::Calculator()
 		if ((tmp >= '0' && tmp <= '9') || tmp == '.')
 		{
 			size_t idx;
-			double num = stod(&infix_time[i], &idx);
+			double num = std::stod(&infix_time[i], &idx);
 			stack_with_numbers.Push(num);
 			i += idx - 1; // Увеличиваем индекс на количество прочитанных символов
 		}
@@ -178,7 +198,7 @@ double TCalc::Calculator()
 			if (infix_time[i + 1] == '-' && i + 1 < infix_time.size())
 			{
 				size_t idx;
-				double num = stod(&infix_time[i+1], &idx);
+				double num = std::stod(&infix_time[i+1], &idx);
 				stack_with_numbers.Push(num);
 				i += idx;
 			}
@@ -207,6 +227,8 @@ double TCalc::Calculator()
 					res = first_number * second_number;
 					break;
 				case DIV:
+					if (second_number == 0)
+						throw - 1;
 					res = first_number / second_number;
 					break;
 				case DEGREE:
@@ -227,35 +249,36 @@ double TCalc::Calculator()
 				switch (a)
 				{
 				case SIN:
-					ress = func_number_rad - 
-						(pow(func_number_rad, 3) / Factorial(3)) +
-						(pow(func_number_rad, 5) / Factorial(5)) -
-						(pow(func_number_rad, 7) / Factorial(7)) +
-						(pow(func_number_rad, 9) / Factorial(9));
+					ress = func_number_rad;
+					for (int i = 3; i <= 20; i += 2) {
+						double term = pow(func_number_rad, i) / Factorial(i);
+						if (i % 4 == 3) {
+							ress -= term; 
+						}
+						else {
+							ress += term;
+						}
+					}
 					break;
-
 				case COS:
-					ress = 1 - 
-						(pow(func_number_rad, 2) / Factorial(2)) +
-						(pow(func_number_rad, 4) / Factorial(4)) -
-						(pow(func_number_rad, 6) / Factorial(6)) +
-						(pow(func_number_rad, 8) / Factorial(8));
+					ress = 1; // Инициализация результата
+					for (int i = 2; i <= 20; i += 2) {
+						double term = pow(func_number_rad, i) / Factorial(i);
+						if (i % 4 == 0) {
+							ress += term; 
+						}
+						else {
+							ress -= term;
+						}
+					}
 					break;
-
 				case EXP:
-					ress = 1 + func_number +
-						(pow(func_number, 2) / Factorial(2)) +
-						(pow(func_number, 3) / Factorial(3)) +
-						(pow(func_number, 4) / Factorial(4)) +
-						(pow(func_number, 5) / Factorial(5)) +
-						(pow(func_number, 6) / Factorial(6)) +
-						(pow(func_number, 7) / Factorial(7)) +
-						(pow(func_number, 8) / Factorial(8)) +
-						(pow(func_number, 9) / Factorial(9)) +
-						(pow(func_number, 10) / Factorial(10)) +
-						(pow(func_number, 11) / Factorial(11)) +
-						(pow(func_number, 12) / Factorial(12)) +
-						(pow(func_number, 13) / Factorial(13));
+					ress = 1; // Инициализация результата
+					double term = 1; // Первый член (1)
+					for (int i = 1; i <= 20; i++) { // Цикл от 1 до 13
+						term *= func_number / i; // Вычисляем текущий член ряда
+						ress += term; // Добавляем текущий член к результату
+					}
 					break;
 				}
 				stack_with_numbers.Push(ress);
@@ -295,6 +318,8 @@ double TCalc::Calculator()
 					res = first_number * second_number;
 					break;
 				case DIV:
+					if (second_number == 0)
+						throw -1;
 					res = first_number / second_number;
 					break;
 				case DEGREE:
