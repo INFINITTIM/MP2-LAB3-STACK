@@ -250,7 +250,7 @@ double TCalc::Calculator()
 				{
 				case SIN:
 					ress = func_number_rad;
-					for (int i = 3; i <= 20; i += 2) {
+					for (int i = 3; i <= 25; i += 2) {
 						double term = pow(func_number_rad, i) / Factorial(i);
 						if (i % 4 == 3) {
 							ress -= term; 
@@ -259,10 +259,11 @@ double TCalc::Calculator()
 							ress += term;
 						}
 					}
+					ress = std::round(ress * 1000000) / 1000000;
 					break;
 				case COS:
 					ress = 1; // Инициализация результата
-					for (int i = 2; i <= 20; i += 2) {
+					for (int i = 2; i <= 25; i += 2) {
 						double term = pow(func_number_rad, i) / Factorial(i);
 						if (i % 4 == 0) {
 							ress += term; 
@@ -271,6 +272,7 @@ double TCalc::Calculator()
 							ress -= term;
 						}
 					}
+					ress = std::round(ress * 1000000) / 1000000;
 					break;
 				case EXP:
 					ress = 1; // Инициализация результата
@@ -279,6 +281,7 @@ double TCalc::Calculator()
 						term *= func_number / i; // Вычисляем текущий член ряда
 						ress += term; // Добавляем текущий член к результату
 					}
+					ress = std::round(ress * 100000) / 100000;
 					break;
 				}
 				stack_with_numbers.Push(ress);
