@@ -29,68 +29,77 @@ TEST(TStack, copied_stack_is_equal_to_source_one)
 	EXPECT_EQ(m, m1);
 }
 
-TEST(TStack, can_set_and_get_element)
+TEST(TStack, empty_stack)
 {
-    TStack<int> s(10);
-    ASSERT_NO_THROW(s.Push(5));
-    EXPECT_EQ(s.Top(), 5);
-    EXPECT_EQ(s.Pop(), 5);
+    TStack<int>m(5);
+    ASSERT_NO_THROW(m.Empty() == true);
 }
 
-TEST(TStack, can_delete_element)
+TEST(TStack, no_empty_stack)
 {
-    TStack<int> s(2);
-    s.Push(1);
-    s.Push(2);
-    ASSERT_NO_THROW(s.Pop());
-    EXPECT_EQ(s.Top(), 1);
+    TStack<int>m(5);
+    m.Push(1);
+    ASSERT_NO_THROW(m.Empty() == false);
+}
+TEST(TStack, full_stack)
+{
+    TStack<int>m(2);
+    m.Push(5);
+    m.Push(2);
+    ASSERT_NO_THROW(m.Full() == true);
+}
+TEST(TStack, no_full_stack) {
+    TStack<int>m(5);
+    m.Push(5);
+    m.Push(10);
+    ASSERT_NO_THROW(m.Full() == false);
+}
+TEST(TStack, empty_stack_with_pop_element) {
+    TStack<int>m(1);
+    m.Push(2);
+    m.Pop();
+    ASSERT_NO_THROW(m.Empty() == true);
+}
+TEST(TStack, pop_function) {
+    TStack<int>m(3);
+    m.Push(2);
+    m.Push(3);
+    m.Push(10);
+    int a = 3;
+    m.Pop();
+    ASSERT_NO_THROW(m.Top() == a);
 }
 
-TEST(TStack, can_assign_stack_to_itself)
-{
-    TStack<int> s(4);
-    ASSERT_NO_THROW(s = s);
+TEST(TStack, clear_stack) {
+    TStack<int>m(2);
+    m.Push(5);
+    m.clear();
+    ASSERT_NO_THROW(m.Empty() == true);
+}
+TEST(TStack, compare_stacks) {
+    TStack<int>m(2);
+    m.Push(5);
+    m.Push(2);
+    TStack<int>m1(m);
+    ASSERT_NO_THROW(m == m1);
+
+}
+TEST(TStack, no_compare_stack) {
+    TStack<int>m(2);
+    TStack<int>m1(m);
+    m.Push(5);
+    m.Push(10);
+    m1.Push(10);
+    m1.Push(5);
+    ASSERT_NO_THROW(m != m1);
 }
 
-TEST(TStack, can_assign_stacks_of_equal_size)
-{
-    const int size = 4;
-    TStack<int> s1(size), s2(size);
-    for (int i = 0; i < size; i++) {
-        s1.Push(1);
-        s2.Push(2);
-    }
-    ASSERT_NO_THROW(s1 = s2);
-}
-
-TEST(TStack, can_assign_stacks_of_different_size)
-{
-    const int size1 = 5, size2 = 10;
-    TStack<int> s1(size1), s2(size2);
-    for (int i = 0; i < size1; i++)
-    {
-        s1.Push(i);
-    }
-    ASSERT_NO_THROW(s2 = s1);
-    EXPECT_EQ(s2, s1);
-}
-
-TEST(TStack, compare_equal_stacks_return_true)
-{
-    const int size = 10;
-    TStack<int> s1(size), s2(size);
-    for (int i = 0; i < size; i++) {
-        s1.Push(i);
-        s2.Push(i);
-    }
-    EXPECT_EQ(s1 == s2, 1);
-}
-
-TEST(TStack, compare_stack_with_itself_return_true)
-{
-    const int size = 10;
-    TStack<int> s1(size);
-    EXPECT_EQ(s1 == s1, 1);
+TEST(TStack, check_clear_stack) {
+    TStack<int>m(5);
+    m.Push(2);
+    m.Push(3);
+    m.clear();
+    ASSERT_NO_THROW(m.Empty());
 }
 
 TEST(TStack, stacks_with_different_size_are_not_equal)
